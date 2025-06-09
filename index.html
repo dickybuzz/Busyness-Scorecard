@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Busyometer</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #f9f9f9; color: #222; }
+        h1 { text-align: center; font-size: 2em; margin-bottom: 0.5em; }
+        p { text-align: center; font-style: italic; margin-bottom: 2em; }
+        .question { margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 0.5em; }
+        button { padding: 12px 24px; background: #222; color: white; border: none; cursor: pointer; }
+        .result { margin-top: 30px; font-size: 1.2em; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Busyometer</h1>
+    <p>How cooked are you? Answer honestly. Or at least amusingly.</p>
+
+    <form id="quizForm">
+        <div class="question">
+            <label>1. How many tabs do you have open right now?</label>
+            <input type="radio" name="q1" value="0"> 0–3<br>
+            <input type="radio" name="q1" value="2"> 4–10<br>
+            <input type="radio" name="q1" value="3"> 11–25<br>
+            <input type="radio" name="q1" value="5"> More than 25
+        </div>
+
+        <div class="question">
+            <label>2. Have you sent a work message while on the toilet?</label>
+            <input type="radio" name="q2" value="0"> No, and never will<br>
+            <input type="radio" name="q2" value="3"> Once or twice<br>
+            <input type="radio" name="q2" value="5"> It's my thinking space<br>
+            <input type="radio" name="q2" value="6"> Doing it now
+        </div>
+
+        <div class="question">
+            <label>3. When did you last say no to a meeting?</label>
+            <input type="radio" name="q3" value="0"> Today<br>
+            <input type="radio" name="q3" value="2"> Last week<br>
+            <input type="radio" name="q3" value="4"> Never<br>
+            <input type="radio" name="q3" value="5"> What’s a boundary?
+        </div>
+
+        <button type="button" onclick="calculateScore()">Submit</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculateScore() {
+            let score = 0;
+            for (let i = 1; i <= 3; i++) {
+                let answer = document.querySelector('input[name="q' + i + '"]:checked');
+                if (answer) score += parseInt(answer.value);
+            }
+
+            let persona = "";
+            let verdict = "";
+
+            if (score <= 4) {
+                persona = "🧘 Zen Master";
+                verdict = "You’ve got boundaries, naps, and inner peace. Teach us your ways.";
+            } else if (score <= 10) {
+                persona = "😐 Quietly Crumbling";
+                verdict = "You’re surviving. But barely. One strong breeze and you’re toast.";
+            } else if (score <= 14) {
+                persona = "💨 The Blur";
+                verdict = "You’re doing everything… but nothing that matters. Deep breath time.";
+            } else {
+                persona = "🌀 The Human Loading Bar";
+                verdict = "You are buffering. Emotionally, spiritually, browser-ly. Please reboot.";
+            }
+
+            document.getElementById("result").innerHTML = "You are: <strong>" + persona + "</strong><br>" + verdict;
+        }
+    </script>
+</body>
+</html>
