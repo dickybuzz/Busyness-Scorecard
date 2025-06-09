@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,6 +10,7 @@
         label { font-weight: bold; display: block; margin-bottom: 0.5em; }
         button { padding: 12px 24px; background: #222; color: white; border: none; cursor: pointer; }
         .result { margin-top: 30px; font-size: 1.2em; font-weight: bold; text-align: center; }
+        .step { display: none; }
     </style>
 </head>
 <body>
@@ -18,61 +18,144 @@
     <p>How cooked are you? Answer honestly. Or at least amusingly.</p>
 
     <form id="quizForm">
-        <div class="question">
+        <div id="step1" class="question step">
             <label>1. How many tabs do you have open right now?</label>
             <input type="radio" name="q1" value="0"> 0–3<br>
             <input type="radio" name="q1" value="2"> 4–10<br>
             <input type="radio" name="q1" value="3"> 11–25<br>
-            <input type="radio" name="q1" value="5"> More than 25
+            <input type="radio" name="q1" value="5"> More than 25<br>
+            <button type="button" onclick="nextStep()">Next</button>
         </div>
 
-        <div class="question">
-            <label>2. Have you sent a work message while on the toilet?</label>
+        <div id="step2" class="question step">
+            <label>2. Have you sent a work message while on the loo?</label>
             <input type="radio" name="q2" value="0"> No, and never will<br>
             <input type="radio" name="q2" value="3"> Once or twice<br>
             <input type="radio" name="q2" value="5"> It's my thinking space<br>
-            <input type="radio" name="q2" value="6"> Doing it now
+            <input type="radio" name="q2" value="6"> Doing it now<br>
+            <button type="button" onclick="nextStep()">Next</button>
         </div>
 
-        <div class="question">
+        <div id="step3" class="question step">
             <label>3. When did you last say no to a meeting?</label>
             <input type="radio" name="q3" value="0"> Today<br>
             <input type="radio" name="q3" value="2"> Last week<br>
             <input type="radio" name="q3" value="4"> Never<br>
-            <input type="radio" name="q3" value="5"> What’s a boundary?
+            <input type="radio" name="q3" value="5"> What’s a boundary?<br>
+            <button type="button" onclick="nextStep()">Next</button>
         </div>
 
-        <button type="button" onclick="calculateScore()">Submit</button>
+        <div id="step4" class="question step">
+            <label>4. How many emails are in your inbox right now?</label>
+            <input type="radio" name="q4" value="0"> 0–50<br>
+            <input type="radio" name="q4" value="2"> 51–200<br>
+            <input type="radio" name="q4" value="4"> 201–1000<br>
+            <input type="radio" name="q4" value="5"> Over 1000<br>
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <div id="step5" class="question step">
+            <label>5. When did you last take a full day off?</label>
+            <input type="radio" name="q5" value="0"> Within the last week<br>
+            <input type="radio" name="q5" value="3"> In the last month<br>
+            <input type="radio" name="q5" value="5"> Can't remember<br>
+            <input type="radio" name="q5" value="6"> Day off? That's cute<br>
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <div id="step6" class="question step">
+            <label>6. Do you eat meals at your desk?</label>
+            <input type="radio" name="q6" value="0"> Never<br>
+            <input type="radio" name="q6" value="2"> Sometimes<br>
+            <input type="radio" name="q6" value="4"> Most days<br>
+            <input type="radio" name="q6" value="5"> My desk has crumbs for company<br>
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <div id="step7" class="question step">
+            <label>7. How often do you check your phone after bedtime?</label>
+            <input type="radio" name="q7" value="0"> Never<br>
+            <input type="radio" name="q7" value="2"> Once or twice<br>
+            <input type="radio" name="q7" value="4"> Every night<br>
+            <input type="radio" name="q7" value="5"> I'm scrolling right now<br>
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <div id="step8" class="question step">
+            <label>8. How many cups of coffee or tea do you drink each day?</label>
+            <input type="radio" name="q8" value="0"> None<br>
+            <input type="radio" name="q8" value="1"> 1–2<br>
+            <input type="radio" name="q8" value="3"> 3–5<br>
+            <input type="radio" name="q8" value="5"> I've lost count<br>
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <div id="step9" class="question step">
+            <label>9. Are you juggling more than one job or side hustle?</label>
+            <input type="radio" name="q9" value="0"> No<br>
+            <input type="radio" name="q9" value="3"> Yes, one extra<br>
+            <input type="radio" name="q9" value="5"> Yes, several<br>
+            <input type="radio" name="q9" value="6"> I'm basically a circus<br>
+            <button type="button" onclick="nextStep()">Next</button>
+        </div>
+
+        <div id="step10" class="question step">
+            <label>10. How often do you skip breaks to finish work?</label>
+            <input type="radio" name="q10" value="0"> Never<br>
+            <input type="radio" name="q10" value="2"> Sometimes<br>
+            <input type="radio" name="q10" value="4"> Most days<br>
+            <input type="radio" name="q10" value="5"> Breaks? What breaks<br>
+            <button type="button" onclick="calculateScore()">Submit</button>
+        </div>
     </form>
 
     <div class="result" id="result"></div>
 
     <script>
+        let currentStep = 1;
+        document.addEventListener('DOMContentLoaded', () => {
+            showStep(currentStep);
+        });
+
+        function showStep(step) {
+            let steps = document.querySelectorAll('.step');
+            steps.forEach((div, index) => {
+                div.style.display = (index === step - 1) ? 'block' : 'none';
+            });
+        }
+
+        function nextStep() {
+            currentStep++;
+            showStep(currentStep);
+        }
+
         function calculateScore() {
             let score = 0;
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 10; i++) {
                 let answer = document.querySelector('input[name="q' + i + '"]:checked');
                 if (answer) score += parseInt(answer.value);
             }
 
-            let persona = "";
-            let verdict = "";
+            const maxScore = 53;
+            let percentage = Math.round((score / maxScore) * 100);
 
-            if (score <= 4) {
-                persona = "🧘 Zen Master";
-                verdict = "You’ve got boundaries, naps, and inner peace. Teach us your ways.";
-            } else if (score <= 10) {
-                persona = "😐 Quietly Crumbling";
-                verdict = "You’re surviving. But barely. One strong breeze and you’re toast.";
-            } else if (score <= 14) {
-                persona = "💨 The Blur";
-                verdict = "You’re doing everything… but nothing that matters. Deep breath time.";
+            let advice = "";
+            if (percentage <= 30) {
+                advice = "You're taking it easy. Keep setting those boundaries.";
+            } else if (percentage <= 60) {
+                advice = "You're busy but managing. Watch out for overdoing it.";
+            } else if (percentage <= 80) {
+                advice = "It's getting hectic. Try to slow down and prioritise.";
             } else {
-                persona = "🌀 The Human Loading Bar";
-                verdict = "You are buffering. Emotionally, spiritually, browser-ly. Please reboot.";
+                advice = "You're at risk of burnout. Step back and rest.";
             }
 
-            document.getElementById("result").innerHTML = "You are: <strong>" + persona + "</strong><br>" + verdict;
+            document.getElementById("quizForm").style.display = "none";
+            document.getElementById("result").innerHTML =
+                "Busyness rating: <strong>" + percentage + "%</strong><br>" +
+                advice +
+                "<div style='margin-top:20px;'><label>Email: <input type='email'></label></div>" +
+                "<div><label><input type='checkbox'> Opt in to our free newsletter</label></div>";
         }
     </script>
 </body>
